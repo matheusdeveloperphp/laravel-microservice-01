@@ -1,20 +1,24 @@
+version: "3.8"
+
 services:
-  # imagem micro 01
+  # app (micro 01)
   micro_01:
     build:
+      context: ./
+      dockerfile: Dockerfile
       args:
         user: matheus
         uid: 1000
-      context: ./
-      dockerfile: Dockerfile
     image: laravel-app
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
       - ./:/var/www
     depends_on:
-      - redis_micro_01
-      - queue
+      db_micro_01:
+        condition: service_healthy
+      redis_micro_01:
+        condition: service_started
     networks:
       - microservices
 
@@ -23,11 +27,13 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     ports:
-      - 8000:80
-      - 443:443
+      - "8000:80"
+      - "443:443"
     volumes:
       - ./:/var/www
       - ./docker/nginx/:/etc/nginx/conf.d/
+    depends_on:
+      - micro_01
     networks:
       - microservices
 
@@ -38,38 +44,54 @@ services:
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      # Se você usa root no Laravel, esses 2 abaixo não são obrigatórios.
+      # Mantive para compatibilidade caso você mude depois para usuário não-root.
       MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./.docker/mysql/dbdata:/var/lib/mysql
+      - dbdata_micro_01:/var/lib/mysql
     ports:
-      - 3308:3306
+      - "3308:3306"
     networks:
       - microservices
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
-  # queue micro 01
+  # queue worker
   queue:
     build:
+      context: ./
+      dockerfile: Dockerfile
       args:
         user: matheus
         uid: 1000
-      context: ./
-      dockerfile: Dockerfile
+    image: laravel-app
     restart: unless-stopped
-    command: "php artisan queue:work"
+    working_dir: /var/www/
+    command: php artisan queue:work --sleep=1 --tries=3 --timeout=120
     volumes:
       - ./:/var/www
     depends_on:
-      - redis_micro_01
+      db_micro_01:
+        condition: service_healthy
+      redis_micro_01:
+        condition: service_started
     networks:
       - microservices
 
-  #redis
+  # redis
   redis_micro_01:
     image: redis:latest
+    restart: unless-stopped
     networks:
       - microservices
 
 networks:
   microservices:
     driver: bridge
+
+volumes:
+  dbdata_micro_01:
