@@ -71,10 +71,6 @@ class CategoryTest extends TestCase
      */
     public function test_validations_store_category()
     {
-        // Criando uma categoria fake
-        $category = Category::factory()->create();
-
-
         //Inserindo dados inválidos (nome vazio)
         $response = $this->postJson($this->endpoint, [
             'title' => '',
@@ -97,10 +93,6 @@ class CategoryTest extends TestCase
      */
     public function test_store_category()
     {
-        // Criando uma categoria fake
-        $category = Category::factory(1)->create();
-
-
         //Inserindo dados inválidos (nome vazio)
         $response = $this->postJson($this->endpoint, [
             'title' => 'Category 01',
@@ -109,12 +101,56 @@ class CategoryTest extends TestCase
 
 
         //Debug temporário para exibir a resposta no terminal enquanto você está desenvolvendo o teste
-        $response->dump();
-
+        //$response->dump();
 
         $response->assertStatus(201);
     }
 
+    /**
+     *  Update Category
+     * @return void
+     */
+    public function test_update_category()
+    {
+        //Categoria que irei editar depois de criada
+        $category = Category::factory()->create();
+
+        //Dados que vou atualizar
+        $data = [
+            'title' => 'Title update ',
+            'description' => 'Description update',
+        ];
+
+        //testando com url fake para verificar se retorna 404
+        $response = $this->putJson("$this->endpoint/fake-category", $data);
+        $response->assertStatus(404);
+
+
+        $response = $this->putJson("$this->endpoint/{$category->url}", []);
+        $response->assertStatus(422);
+
+        $response = $this->putJson("$this->endpoint/{$category->url}", $data);
+        $response->assertStatus(200);
+
+    }
+
+    /**
+     *  Delete Category
+     * @return void
+     */
+    public function test_delete_category()
+    {
+        //Categoria que irei editar depois de criada
+        $category = Category::factory()->create();
+
+        $response = $this->deleteJson("{$this->endpoint}/fake-category");
+        $response->assertStatus(404);
+
+
+        $response = $this->deleteJson("{$this->endpoint}/{$category->url}");
+        $response->assertStatus(204);
+
+    }
 
 
 }
