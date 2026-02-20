@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b56bfb5d21eaae286e532c3ed2f8941",
+    "content-hash": "68914296898c6c0cc21a6d1852274853",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1727,6 +1727,43 @@
                 }
             ],
             "time": "2024-09-21T08:32:55+00:00"
+        },
+        {
+            "name": "matheusdeveloperphp/microservice-common",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matheusdeveloperphp/microservice-common.git",
+                "reference": "78bb4b108d9148420bb81abb649185551c8dea2e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/matheusdeveloperphp/microservice-common/zipball/78bb4b108d9148420bb81abb649185551c8dea2e",
+                "reference": "78bb4b108d9148420bb81abb649185551c8dea2e",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Matheusdeveloperphp\\MicroserviceCommon\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matheus Soares Lima"
+                }
+            ],
+            "description": "Packages Files Utils Microservices",
+            "support": {
+                "issues": "https://github.com/matheusdeveloperphp/microservice-common/issues",
+                "source": "https://github.com/matheusdeveloperphp/microservice-common/tree/main"
+            },
+            "time": "2026-02-20T00:11:47+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -7728,11 +7765,13 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "matheusdeveloperphp/microservice-common": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.3"
+        "php": "^7.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"
