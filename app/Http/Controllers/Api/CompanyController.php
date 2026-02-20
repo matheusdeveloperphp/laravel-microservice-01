@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUpdateCompany;
 use App\Http\Resources\CompanyResource;
+use App\Jobs\CompanyCreated;
 use App\Models\Company;
 use App\Service\EvaluationService;
 use Illuminate\Http\Client\Response as HttpResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -45,6 +47,9 @@ class CompanyController extends Controller
     public function store(StoreUpdateCompany $request)
     {
         $company = $this->repository->create($request->validated());
+
+        CompanyCreated::dispatch($company->email);
+
         return new CompanyResource($company);
     }
 
@@ -52,7 +57,7 @@ class CompanyController extends Controller
      * Display the specified resource.
      *
      * @param string $uuid
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(string $uuid)
     {

@@ -63,22 +63,17 @@ services:
   # queue worker
   queue:
     build:
-      context: ./
-      dockerfile: Dockerfile
       args:
         user: matheus
         uid: 1000
-    image: laravel-app
+      context: ./
+      dockerfile: Dockerfile
     restart: unless-stopped
-    working_dir: /var/www/
-    command: php artisan queue:work --sleep=1 --tries=3 --timeout=120
+    command: "php artisan queue:work"
     volumes:
       - ./:/var/www
     depends_on:
-      db_micro_01:
-        condition: service_healthy
-      redis_micro_01:
-        condition: service_started
+      - redis_micro_01
     networks:
       - microservices
 
