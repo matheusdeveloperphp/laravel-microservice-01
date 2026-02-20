@@ -14,7 +14,8 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
-        "matheusdeveloperphp/microservice-common": "dev-main"
+        "matheusdeveloperphp/microservice-common": "dev-main",
+        "vladimir-yuldashev/laravel-queue-rabbitmq": "^11.3"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
